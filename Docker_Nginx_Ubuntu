@@ -1,0 +1,63 @@
+FROM ubuntu
+MAINTAINER aka@ekzc.com
+
+ENV NGINX_VERSION   1.17.0
+# 设置ENV
+ENV SRC_PATH="/usr/local/src"
+ENV NGINX_PATH="/usr/local/nginx"
+ENV OPENSSL_PATH="/usr/local/openssl"
+ENV NGINX_CONF="/usr/local/nginx/conf"
+ENV NGINX_SERVICE="/usr/lib/systemd/sysem"
+ENV NGINX_CONF_VHOST="/usr/local/nginx/conf/vhost"
+
+# 更新系统\安装依赖包
+RUN apt-get update -y \
+    && apt-get install -y vim git wget bzip2 unzip make openssl libssl-dev zlib1g-dev build-essential libtool automake autoconf
+
+# 下载需要的源码包
+RUN git clone https://github.com/G-Akiraka/DockerFile-Nginx.git /usr/local/src
+# 解压压缩包
+WORKDIR $SRC_PATH
+RUN tar xvf nginx-1.17.0.tar.gz \
+    && unzip pcre-8.43.zip \
+    && tar xvf jemalloc-5.2.0.tar.bz2
+
+# 编译 jemalloc
+WORKDIR $SRC_PATH/jemalloc-5.2.0
+RUN ./configure
+RUN make && make install
+RUN ln -s /usr/local/lib/libjemalloc.so.2 /usr/lib/libjemalloc.so.1 \
+    && echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
+RUN ldconfig
+
+# 编译 Nginx
+RUN useradd -M -s /sbin/nologin www
+WORKDIR $SRC_PATH/nginx-1.17.0
+RUN ./configure --prefix=$NGINX_PATH --user=www --group=www --with-http_stub_status_module \
+    --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_realip_module \
+    --with-http_flv_module --with-http_mp4_module --with-pcre=../pcre-8.43 --with-pcre-jit --with-ld-opt='-ljemalloc'
+RUN make && make install
+
+# Nginx 后续配置
+WORKDIR $SRC_PATH
+RUN cp init.d/Nginx-init-Ubuntu /etc/init.d/nginx \
+    && chmod +x /etc/init.d/nginx \
+    && /bin/cp -f config/nginx.conf $NGINX_CONF \
+    && /bin/cp -f config/proxy.conf $NGINX_CONF \
+    && /bin/cp -rf rewrite $NGINX_CONF
+    
+RUN mkdir -p /data/wwwlogs \
+    && mkdir -p /data/wwwlogs \
+    && mkdir $NGINX_CONF_VHOST \
+    && chown -R www:www $NGINX_PATH \
+    && mkdir -p /data/wwwroot/default \
+    && /bin/cp -f config/index.html /data/wwwroot/default \
+    && /bin/cp -f config/xprober.php /data/wwwroot/default
+ENV PATH /usr/local/nginx/sbin:$PATH
+
+# 配置端口
+EXPOSE 80 443
+
+# 添加开机启动项
+RUN update-rc.d nginx defaults
+CMD /bin/sh -c 'nginx -g "daemon off;"'
