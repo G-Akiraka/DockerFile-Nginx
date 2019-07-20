@@ -6,11 +6,14 @@ ENV NGINX_VERSION   1.17.0
 ENV SRC_PATH="/usr/local/src"
 ENV NGINX_PATH="/usr/local/nginx"
 ENV NGINX_CONF="/usr/local/nginx/conf"
+# 设置即将安装版本
+ENV PCRE_VERSION="pcre-8.43"
+ENV NGINX_VERSION="nginx-1.17.1"
+ENV JEMALLOC_VERSION="jemalloc-5.2.0"
 
 # 使用阿里源
 RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
     && sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
-
 # 设置时区
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
@@ -19,19 +22,8 @@ RUN apt-get clean && apt-get update -y \
     && apt-get install -y --assume-yes apt-utils vim git bzip2 libssl-dev zlib1g-dev build-essential libtool \
     && rm -r /var/lib/apt/lists/* 
 
-# 拉取git仓库
-RUN git clone https://github.com/G-Akiraka/DockerFile-Nginx.git /usr/local/src
-
-# 下载源码包
-
-ADD http://nginx.org/download/nginx-1.17.1.tar.gz ${SRC_PATH}
-ADD https://ftp.pcre.org/pub/pcre/pcre-8.43.tar.gz ${SRC_PATH}
-ADD https://github.com/jemalloc/jemalloc/releases/download/5.2.0/jemalloc-5.2.0.tar.bz2 ${SRC_PATH}
 # 解压压缩包
-WORKDIR ${SRC_PATH}
-RUN tar xvf nginx-1.17.1.tar.gz \
-    && tar xvf pcre-8.43.tar.gz \
-    && tar xvf jemalloc-5.2.0.tar.bz2
+ADD src/* ${SRC_PATH}
 
 # 编译 jemalloc
 WORKDIR ${SRC_PATH}/jemalloc-5.2.0
@@ -51,9 +43,10 @@ RUN make && make install
 
 # Nginx 后续配置
 WORKDIR ${SRC_PATH}
-RUN /bin/cp -rf conf/* ${NGINX_CONF} \
-    && chown -R www:www ${NGINX_PATH} \
-    && mkdir -p /data/wwwlogs
+RUN /bin/rm -rf ${NGINX_CONF}/nginx.conf \
+COPY conf/* ${NGINX_CONF} \
+    && mkdir -p /data/wwwlogs \
+    && chown -R www:www ${NGINX_PATH}
 
 # 删除源码文件
 RUN /bin/rm -rf ${SRC_PATH}/*
