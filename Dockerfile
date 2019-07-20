@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 MAINTAINER akiraka@qq.com
 
-ENV NGINX_VERSION   1.17.0
+ENV NGINX_VERSION   1.17.1
 # 设置ENV
 ENV SRC_PATH="/usr/local/src"
 ENV NGINX_PATH="/usr/local/nginx"
@@ -15,7 +15,7 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # 更新系统\安装依赖包
 RUN apt-get clean && apt-get update -y \
-    && apt-get install -y --assume-yes apt-utils vim git bzip2 libssl-dev zlib1g-dev build-essential \
+    && apt-get install -y --assume-yes apt-utils vim libssl-dev zlib1g-dev build-essential \
     && rm -r /var/lib/apt/lists/* 
 
 # 准备编译要的文件
