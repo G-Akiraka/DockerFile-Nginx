@@ -1,19 +1,34 @@
-# DockerFile-Nginx
-#### 使用方法
+### 编译Nginx 1.17.1版本
+> 特性：
+1) 默认调优好Nginx配置
+2) 默认添加虚拟配置，宿主机ip访问即可
+3) 类传统部署方式，源码编译安装
+> 目录说明：
+1) Nginx项目路径 /data/wwwroot
+2) Nginx日子路径 /data/wwwlogs
+3) Nginx虚拟路径 /usr/local/nginx/conf/vhost
+4) Nginx重写路径 /usr/local/nginx/conf/rewrite
+#### 1、使用方法
 ```
-wget xxx
+git clone https://github.com/G-Akiraka/DockerFile-Nginx.git && cd DockerFile-Nginx
 ```
-#### 开始安装
-
+#### 2、开始构建Docker Nginx镜像 
 ```
-docker build -f 文件位置 -t ubuntu/nginx:v1.17.0 .
+docker build -f Dockerfile -t nginx:v1.17.1 .
 ```
-#### 运行容器
+#### 3、运行Nginx容器
 ```
-docker run -d -p 80:80 ubuntu/nginx:v1.17.0
+docker run -d -p 80:80 nginx:v1.17.1
 ```
-#### 查看是否运行
+#### 4、查看Nginx容器是否运行
 ```
 docker ps
+# 调试容器，如果需要的话
+docker run -it nginx:v1.17.1 /bin/bash
 ```
-#### 通过浏览器访问
+#### 5、通过浏览器访问，默认可通过宿主机ip访问
+
+### 通过Dokcer compose运行容器
+```
+sudo docker-compose up -d
+```
