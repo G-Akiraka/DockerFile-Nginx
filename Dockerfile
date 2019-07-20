@@ -44,12 +44,13 @@ RUN /bin/rm -rf ${SRC_PATH}/*
 
 # Nginx 复制配置文件
 ADD conf ${NGINX_CONF}
+
 # 创建 Nginx 运行目录与授权
 RUN mkdir -p /data/wwwlogs \
     && chown -R www:www ${NGINX_PATH}
+
 # 默认进入 Nginx 工作目录
 WORKDIR ${NGINX_PATH}
-
 
 # 设置环境变量
 ENV PATH /usr/local/nginx/sbin:$PATH
