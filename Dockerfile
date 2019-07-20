@@ -19,7 +19,7 @@ RUN apt-get clean && apt-get update -y \
     && rm -r /var/lib/apt/lists/* 
 
 # 准备编译要的文件
-ADD src/pcre-8.43.zip ${SRC_PATH}
+ADD src/pcre-8.43.tar.gz ${SRC_PATH}
 ADD src/nginx-1.17.1.tar.gz ${SRC_PATH}
 ADD src/jemalloc-5.2.0.tar.bz2 ${SRC_PATH}
 
