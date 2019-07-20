@@ -6,10 +6,6 @@ ENV NGINX_VERSION   1.17.0
 ENV SRC_PATH="/usr/local/src"
 ENV NGINX_PATH="/usr/local/nginx"
 ENV NGINX_CONF="/usr/local/nginx/conf"
-# 设置即将安装版本
-ENV PCRE_VERSION="pcre-8.43"
-ENV NGINX_VERSION="nginx-1.17.1"
-ENV JEMALLOC_VERSION="jemalloc-5.2.0"
 
 # 使用阿里源
 RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
@@ -19,11 +15,13 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # 更新系统\安装依赖包
 RUN apt-get clean && apt-get update -y \
-    && apt-get install -y --assume-yes apt-utils vim git bzip2 libssl-dev zlib1g-dev build-essential libtool \
+    && apt-get install -y --assume-yes apt-utils vim git bzip2 libssl-dev zlib1g-dev build-essential \
     && rm -r /var/lib/apt/lists/* 
 
-# 解压压缩包
-ADD src/* ${SRC_PATH}
+# 准备编译要的文件
+ADD src/pcre-8.43.zip ${SRC_PATH}
+ADD src/nginx-1.17.1.tar.gz ${SRC_PATH}
+ADD src/jemalloc-5.2.0.tar.bz2 ${SRC_PATH}
 
 # 编译 jemalloc
 WORKDIR ${SRC_PATH}/jemalloc-5.2.0
@@ -47,15 +45,12 @@ RUN /bin/rm -rf ${NGINX_CONF}/nginx.conf \
 COPY conf/* ${NGINX_CONF} \
     && mkdir -p /data/wwwlogs \
     && chown -R www:www ${NGINX_PATH}
-
+WORKDIR ${NGINX_PATH}
 # 删除源码文件
 RUN /bin/rm -rf ${SRC_PATH}/*
 
 # 设置环境变量
 ENV PATH /usr/local/nginx/sbin:$PATH
-
-# 进入 Nginx 工作目录
-WORKDIR ${NGINX_PATH}
 
 # 配置端口
 EXPOSE 80 443
