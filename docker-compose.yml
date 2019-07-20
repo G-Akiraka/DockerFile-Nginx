@@ -1,0 +1,32 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:v1.17.0
+    restart: always
+    volumes:
+      - /data/wwwroot:/data/wwwroot
+      - /data/nginx/wwwlogs:/data/wwwlogs
+      - /data/nginx/vhost:/usr/local/nginx/conf/vhost
+      - /data/nginx/ssl:/usr/local/nginx/conf/ssl
+    ports:
+      - "80:80"
+      - "443:443"
+#   mysql:
+#     mage: mysql:5.6
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_PASSWORD: "set password"
+#       MYSQL_USER: 'root'
+#       MYSQL_PASS: 'set password'
+#     volumes:
+#       - /data/mysql/data:/var/lib/mysql
+#       - /data/mysql/conf/my.cnf:/etc/my.cnf
+#     ports:
+#       - "3306:3306"
+#   php:
+#     image: php:7.2-fpm
+#     restart: always
+#     volumes: 
+#       - /data/nginx/wwwroot:/data/wwwroot
+#     ports:
+#       - "9000:9000"
