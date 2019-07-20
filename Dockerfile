@@ -14,8 +14,8 @@ RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # 更新系统\安装依赖包
-RUN apt-get clean && apt-get update -y \
-    && apt-get install -y --assume-yes apt-utils vim libssl-dev zlib1g-dev build-essential \
+RUN apt-get update -y \
+    && apt-get install -y vim libssl-dev zlib1g-dev build-essential \
     && rm -r /var/lib/apt/lists/* 
 
 # 准备编译要的文件
