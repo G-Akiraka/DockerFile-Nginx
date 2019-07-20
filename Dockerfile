@@ -39,15 +39,17 @@ RUN ./configure --prefix=${NGINX_PATH} --user=www --group=www --with-http_stub_s
     --with-http_flv_module --with-http_mp4_module --with-pcre=../pcre-8.43 --with-pcre-jit --with-ld-opt='-ljemalloc'
 RUN make && make install
 
-# Nginx 后续配置
-WORKDIR ${SRC_PATH}
-RUN /bin/rm -rf ${NGINX_CONF}/nginx.conf \
-COPY conf/* ${NGINX_CONF} \
-    && mkdir -p /data/wwwlogs \
-    && chown -R www:www ${NGINX_PATH}
-WORKDIR ${NGINX_PATH}
 # 删除源码文件
 RUN /bin/rm -rf ${SRC_PATH}/*
+
+# Nginx 复制配置文件
+ADD conf ${NGINX_CONF}
+# 创建 Nginx 运行目录与授权
+RUN mkdir -p /data/wwwlogs \
+    && chown -R www:www ${NGINX_PATH}
+# 默认进入 Nginx 工作目录
+WORKDIR ${NGINX_PATH}
+
 
 # 设置环境变量
 ENV PATH /usr/local/nginx/sbin:$PATH

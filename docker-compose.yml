@@ -1,7 +1,7 @@
 version: '3'
 services:
   nginx:
-    image: nginx:v1.17.0
+    image: nginx:1.17.1
     restart: always
     volumes:
       - /data/wwwroot:/data/wwwroot
