@@ -5,7 +5,7 @@
 3) 类传统部署方式，源码编译安装
 > 目录说明：
 1) Nginx项目路径 /data/wwwroot
-2) Nginx日子路径 /data/wwwlogs
+2) Nginx日志路径 /data/wwwlogs
 3) Nginx虚拟路径 /usr/local/nginx/conf/vhost
 4) Nginx重写路径 /usr/local/nginx/conf/rewrite
 #### 1、使用方法
