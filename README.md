@@ -8,6 +8,10 @@
 2) Nginx日志路径 /data/wwwlogs
 3) Nginx虚拟路径 /usr/local/nginx/conf/vhost
 4) Nginx重写路径 /usr/local/nginx/conf/rewrite
+> 其他说明：
+1) 默认创建www用户组与用户
+2) Nginx 默认运行用户组与用户 www
+3) 如遇权限问题，请将项目授权chown -R www:www 项目目录
 #### 1、使用方法
 ```
 git clone https://github.com/G-Akiraka/DockerFile-Nginx.git && cd DockerFile-Nginx
