@@ -1,7 +1,9 @@
 version: '3'
 services:
   nginx:
-    build: Dockerfile
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     image: nginx:1.17.1
     restart: always
     volumes:
