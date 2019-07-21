@@ -34,5 +34,6 @@ docker run -it nginx:v1.17.1 /bin/bash
 
 ### 通过Dokcer compose运行容器
 ```
-sudo docker-compose up -d
+# 启动并构建Nginx容器
+sudo docker-compose up -d build
 ```
