@@ -6,6 +6,8 @@ ENV NGINX_VERSION   1.17.1
 ENV SRC_PATH="/usr/local/src"
 ENV NGINX_PATH="/usr/local/nginx"
 ENV NGINX_CONF="/usr/local/nginx/conf"
+#   设置容器中文，否则中文乱码
+ENV LANG C.UTF-8
 
 # 使用阿里源
 RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
