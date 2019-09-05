@@ -4,7 +4,7 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    image: nginx:1.17.1
+    image: nginx:1.17.3
     restart: always
     volumes:
       - /data/nginx/wwwroot:/data/wwwroot
