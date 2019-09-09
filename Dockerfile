@@ -16,8 +16,8 @@ RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list 
 
 #   更新系统\安装依赖包
 RUN apt-get update -y \
-    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone
     && apt-get install -y vim libssl-dev zlib1g-dev build-essential tzdata \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone \
     && rm -r /var/lib/apt/lists/* 
 
 #   准备编译要的文件
