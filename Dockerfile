@@ -7,8 +7,10 @@ ENV NGINX_PATH="/usr/local/nginx"
 ENV NGINX_CONF="/usr/local/nginx/conf"
 #   设置容器中文，否则中文乱码
 ENV LANG C.UTF-8
-#   设置时区
+#   定义时区参数
 ENV TZ Asia/Shanghai
+#设置时区
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone
 
 #   使用阿里源
 RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
