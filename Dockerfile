@@ -9,8 +9,6 @@ ENV NGINX_CONF="/usr/local/nginx/conf"
 ENV LANG C.UTF-8
 #   定义时区参数
 ENV TZ Asia/Shanghai
-#设置时区
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone
 
 #   使用阿里源
 RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
@@ -18,7 +16,8 @@ RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list 
 
 #   更新系统\安装依赖包
 RUN apt-get update -y \
-    && apt-get install -y vim libssl-dev zlib1g-dev build-essential \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone
+    && apt-get install -y vim libssl-dev zlib1g-dev build-essential tzdata \
     && rm -r /var/lib/apt/lists/* 
 
 #   准备编译要的文件
