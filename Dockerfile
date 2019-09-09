@@ -10,14 +10,14 @@ ENV LANG C.UTF-8
 #   定义时区参数
 ENV TZ Asia/Shanghai
 
-#   使用阿里源
+#   使用阿里源并设置时区
 RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
-    && sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+    && sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone
 
 #   更新系统\安装依赖包
 RUN apt-get update -y \
     && apt-get install -y vim libssl-dev zlib1g-dev build-essential tzdata \
-    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone \
     && rm -r /var/lib/apt/lists/* 
 
 #   准备编译要的文件
