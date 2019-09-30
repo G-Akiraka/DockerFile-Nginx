@@ -1,8 +1,9 @@
-### 编译Nginx 1.17.3版本
+### 编译Nginx 1.17.4版本
 > 特性：
 1) 默认调优好Nginx配置
 2) 默认添加虚拟配置，宿主机ip访问即可
 3) 类传统部署方式，源码编译安装
+4) 新增logrotate将nginx日志按日期切割
 > 目录说明：
 1) Nginx项目路径 /data/wwwroot
 2) Nginx日志路径 /data/wwwlogs
@@ -18,17 +19,17 @@ git clone https://github.com/G-Akiraka/DockerFile-Nginx.git && cd DockerFile-Ngi
 ```
 #### 2、开始构建Docker Nginx镜像 
 ```
-docker build -f Dockerfile -t nginx:1.17.3 .
+docker build -f Dockerfile -t nginx:1.17.4 .
 ```
 #### 3、运行Nginx容器
 ```
-docker run -d -p 80:80 nginx:1.17.3
+docker run -d -p 80:80 nginx:1.17.4
 ```
 #### 4、查看Nginx容器是否运行
 ```
 docker ps
 # 调试容器，如果需要的话
-docker run -it nginx:1.17.3 /bin/bash
+docker run -it nginx:1.17.4 /bin/bash
 ```
 #### 5、通过浏览器访问，默认可通过宿主机ip访问
 

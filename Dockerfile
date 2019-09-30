@@ -17,7 +17,7 @@ RUN sed -i s@/security.ubuntu.com/@/mirrors.163.com/@g /etc/apt/sources.list \
 
 #   更新系统\安装依赖包
 RUN apt-get update -y \
-    && apt-get install -y vim libssl-dev zlib1g-dev gcc g++ make tzdata \
+    && apt-get install -y libssl-dev zlib1g-dev gcc g++ make tzdata logrotate \
     && rm -r /var/lib/apt/lists/* 
 
 #   准备编译要的文件
