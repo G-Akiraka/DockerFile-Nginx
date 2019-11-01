@@ -21,6 +21,7 @@ RUN apt-get update -y \
     && rm -r /var/lib/apt/lists/* 
 
 #   准备编译要的文件
+ADD script/aka_nginx.sh /root
 ADD src/pcre-8.43.tar.gz ${SRC_PATH}
 ADD src/nginx-1.17.5.tar.gz ${SRC_PATH}
 ADD src/jemalloc-5.2.0.tar.bz2 ${SRC_PATH}
@@ -50,8 +51,7 @@ RUN mkdir -p /data/wwwlogs \
     && chown -R www:www ${NGINX_PATH} \
     #   删除源码文件
     && /bin/rm -rf ${SRC_PATH}/* \
-    #   启动 crontab 服务
-    && service cron start
+    && chmod +x /root/aka_nginx.sh
 
 #   默认进入 Nginx 工作目录
 WORKDIR ${NGINX_PATH}
@@ -63,4 +63,4 @@ ENV PATH /usr/local/nginx/sbin:$PATH
 EXPOSE 80 443
 
 #   添加开机启动项
-CMD /bin/sh -c 'nginx -g "daemon off;"'
+CMD "/root/aka_nginx.sh"
