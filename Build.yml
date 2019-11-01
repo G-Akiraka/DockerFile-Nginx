@@ -24,7 +24,7 @@ RUN apt-get update -y \
 ADD src/pcre-8.43.tar.gz ${SRC_PATH}
 ADD src/nginx-1.17.5.tar.gz ${SRC_PATH}
 ADD src/jemalloc-5.2.0.tar.bz2 ${SRC_PATH}
-ADD config/logrotate.d/nginx /etc/logrotate.d
+ADD config/logrotate.d/logrotate-nginx /etc/logrotate.d
 
 #   编译 jemalloc
 WORKDIR ${SRC_PATH}/jemalloc-5.2.0
