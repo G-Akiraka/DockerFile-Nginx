@@ -19,7 +19,7 @@ git clone https://github.com/G-Akiraka/DockerFile-Nginx.git && cd DockerFile-Ngi
 ```
 #### 2、开始构建Docker Nginx镜像 
 ```
-docker build -f Dockerfile -t nginx:1.17.5 .
+docker build -f Build.yml -t nginx:1.17.5 .
 ```
 #### 3、运行Nginx容器
 ```
