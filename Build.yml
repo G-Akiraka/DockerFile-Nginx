@@ -53,7 +53,7 @@ RUN mkdir -p /data/wwwlogs \
     && /bin/rm -rf ${SRC_PATH}/* \
     && chmod +x /root/aka_nginx.sh \
     #   添加定时任务，切割 nginx 日志
-    && echo "0 0 * * * /usr/sbin/logrotate -f /etc/logrotate.d/nginx >/dev/null 2>&1" >> /var/spool/cron/crontabs/root
+    && echo "1 0 * * * /usr/sbin/logrotate -f /etc/logrotate.d/nginx >/dev/null 2>&1" >> /var/spool/cron/crontabs/root
 
 #   默认进入 Nginx 工作目录
 WORKDIR ${NGINX_PATH}
