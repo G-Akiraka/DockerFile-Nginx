@@ -30,7 +30,7 @@ WORKDIR ${SRC_PATH}/jemalloc-5.2.0
 RUN ./configure
 RUN make && make install
 RUN ln -s /usr/local/lib/libjemalloc.so.2 /usr/lib/libjemalloc.so.1 \
-    && echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
+    && echo '/usr/local/lib' > /etc/ld.so.conf.conf
 RUN ldconfig
 
 # 编译 Nginx
