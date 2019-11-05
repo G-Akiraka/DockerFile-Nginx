@@ -1,0 +1,66 @@
+FROM alpine:3.10.2
+MAINTAINER akiraka@qq.com
+
+#   设置ENV
+ENV SRC_PATH="/usr/local/src"
+ENV NGINX_PATH="/usr/local/nginx"
+ENV NGINX_CONF="/usr/local/nginx/conf"
+#   设置容器中文，否则中文乱码
+ENV LANG C.UTF-8
+#   定义时区参数
+ENV TZ Asia/Shanghai
+
+#   使用阿里源与设置时间
+RUN sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.aliyun.com/@g /etc/apk/repositories \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone \
+    #   更新系统\安装依赖包
+    && apk update \
+    && apk add fontconfig tzdata zlib-dev gcc g++ make openssl-dev nano logrotate rsyslog \
+    && rm -rf /tmp/* /var/cache/apk/*
+
+#   准备编译要的文件
+ADD script/aka_nginx.sh /root
+ADD src/pcre-8.43.tar.gz ${SRC_PATH}
+ADD src/nginx-1.17.5.tar.gz ${SRC_PATH}
+ADD src/jemalloc-5.2.0.tar.bz2 ${SRC_PATH}
+ADD config/logrotate-nginx /etc/logrotate.d/nginx
+
+#   编译 jemalloc
+WORKDIR ${SRC_PATH}/jemalloc-5.2.0
+RUN ./configure
+RUN make && make install
+RUN ln -s /usr/local/lib/libjemalloc.so.2 /usr/lib/libjemalloc.so.1 \
+    && echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
+RUN ldconfig
+
+# 编译 Nginx
+RUN useradd -M -s /sbin/nologin www
+WORKDIR ${SRC_PATH}/nginx-1.17.5
+RUN ./configure --prefix=${NGINX_PATH} --user=www --group=www --with-http_stub_status_module \
+    --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_realip_module \
+    --with-http_flv_module --with-http_mp4_module --with-pcre=../pcre-8.43 --with-pcre-jit --with-ld-opt='-ljemalloc'
+RUN make && make install
+
+#   Nginx 复制配置文件
+ADD conf ${NGINX_CONF}
+
+#   后续操作
+RUN mkdir -p /data/wwwlogs \
+    && chown -R www:www ${NGINX_PATH} \
+    #   删除源码文件
+    && /bin/rm -rf ${SRC_PATH}/* \
+    && chmod +x /root/aka_nginx.sh \
+    #   添加定时任务，切割 nginx 日志
+    && echo "0       0       *       *       *       /usr/sbin/logrotate -f /etc/logrotate.d/nginx >/dev/null 2>&1" >> /etc/crontabs/root
+
+#   默认进入 Nginx 工作目录
+WORKDIR ${NGINX_PATH}
+
+#   设置环境变量
+ENV PATH /usr/local/nginx/sbin:$PATH
+
+#   配置端口
+EXPOSE 80 443
+
+#   添加开机启动项
+CMD "/root/aka_nginx.sh"
