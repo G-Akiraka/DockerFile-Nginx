@@ -4,6 +4,7 @@
 2) 默认添加虚拟配置，宿主机ip访问即可
 3) 类传统部署方式，源码编译安装
 4) 新增logrotate将nginx日志按日期切割
+5）定义Nginx日志默认JSON输出，方便ELK
 > 目录说明：
 1) Nginx项目路径 /data/wwwroot
 2) Nginx日志路径 /data/wwwlogs
