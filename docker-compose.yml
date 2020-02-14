@@ -7,10 +7,10 @@ services:
     image: nginx:1.17.8
     restart: always
     volumes:
+      - /data/nginx/ssl:/etc/nginx/ssl
       - /data/nginx/wwwroot:/data/wwwroot
       - /data/nginx/wwwlogs:/data/wwwlogs
-      - /data/nginx/vhost:/usr/local/nginx/conf/vhost
-      - /data/nginx/ssl:/usr/local/nginx/conf/ssl
+      - /data/nginx/conf.d:/etc/nginx/conf.d
     ports:
       - "80:80"
       - "443:443"
