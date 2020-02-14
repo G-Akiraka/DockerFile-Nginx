@@ -1,5 +1,5 @@
 # 从官方基础版本构建
-FROM nginx:1.178-alpine
+FROM nginx:1.17.8-alpine
 
 # 设置容器中文，否则中文乱码
 ENV LANG C.UTF-8
