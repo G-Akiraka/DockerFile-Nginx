@@ -1,0 +1,27 @@
+# 从官方基础版本构建
+FROM nginx:1.178-alpine
+
+# 设置容器中文，否则中文乱码
+ENV LANG C.UTF-8
+#   设置时区
+ENV TZ Asia/Shanghai
+
+# 使用阿里源与设置时间
+RUN sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.aliyun.com/@g /etc/apk/repositories \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone \
+    #   更新系统\安装依赖包
+    && apk update \
+    && apk add fontconfig tzdata logrotate rsyslog \
+    && rm -rf /tmp/* /var/cache/apk/*
+
+# 添加定时任务，切割 nginx 日志
+RUN echo "1 0 * * * /usr/sbin/logrotate -f /etc/logrotate.d/nginx >/dev/null 2>&1" >> /var/spool/cron/crontabs/root
+
+# 拷贝 Nginx 配置文件
+ADD conf /etc/nginx
+
+
+# 添加 Nginx 启动脚本
+ADD script/aka_nginx.sh /root
+RUN chmod +x /root/aka_nginx.sh
+CMD "/root/aka_nginx.sh"

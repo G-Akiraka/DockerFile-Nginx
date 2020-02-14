@@ -3,8 +3,8 @@ services:
   nginx:
     build:
       context: ./
-      dockerfile: ./nginx_1.17.8-alpine.yml
-    image: nginx:1.17.8
+      dockerfile: ./Dockerfile
+    image: nginx:1.17.5
     restart: always
     volumes:
       - /data/nginx/wwwroot:/data/wwwroot
