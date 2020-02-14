@@ -14,14 +14,15 @@ RUN sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.aliyun.com/@g /etc/apk/repositori
     && apk add fontconfig tzdata logrotate rsyslog \
     && rm -rf /tmp/* /var/cache/apk/*
 
+# 添加 Nginx 启动脚本
+ADD script/aka_nginx.sh /root
+ADD config/logrotate-nginx /etc/logrotate.d/nginx
+RUN chmod +x /root/aka_nginx.sh \
 # 添加定时任务，切割 nginx 日志
-RUN echo "1 0 * * * /usr/sbin/logrotate -f /etc/logrotate.d/nginx >/dev/null 2>&1" >> /var/spool/cron/crontabs/root
+    && echo "1 0 * * * /usr/sbin/logrotate -f /etc/logrotate.d/nginx >/dev/null 2>&1" >> /var/spool/cron/crontabs/root
 
 # 拷贝 Nginx 配置文件
 ADD conf /etc/nginx
 
-
-# 添加 Nginx 启动脚本
-ADD script/aka_nginx.sh /root
-RUN chmod +x /root/aka_nginx.sh
+# 启动 nginx 服务
 CMD "/root/aka_nginx.sh"
