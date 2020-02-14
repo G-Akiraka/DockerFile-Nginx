@@ -18,7 +18,7 @@ RUN sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.aliyun.com/@g /etc/apk/repositori
 ADD script/aka_nginx.sh /root
 ADD config/logrotate-nginx /etc/logrotate.d/nginx
 RUN chmod +x /root/aka_nginx.sh \
-    && mkdir -p /data/wwwlogs
+    && mkdir -p /data/wwwlogs \
 # 添加定时任务，切割 nginx 日志
     && echo "1 0 * * * /usr/sbin/logrotate -f /etc/logrotate.d/nginx >/dev/null 2>&1" >> /var/spool/cron/crontabs/root
 
